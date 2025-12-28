@@ -37,7 +37,3 @@ val ReputationBlueText = Color(0xFF1565C0)
 // Gray Tier (<1k)
 val ReputationGrayBackground = Color(0xFFF5F5F5)
 val ReputationGrayText = Color(0xFF616161)
-
-// Card Background
-val CardBackgroundLight = Color(0xFFF1F1F1)
-val CardBackgroundDark = Color(0xFF2A2A2A)
