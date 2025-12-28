@@ -26,8 +26,8 @@ class SearchUsersUseCaseTest {
     fun `invoke calls repository with query`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(1, "John Doe", 1000, null, null),
-            User(2, "Johnny", 500, null, null)
+            User(id = 1, username = "John Doe", reputation = 1000, profileImage = null, location = null, creationDate = null),
+            User(id = 2, username = "Johnny", reputation = 500, profileImage = null, location = null, creationDate = null)
         )
         coEvery { 
             userRepository.searchUsers(query = "John", page = 1, pageSize = 20) 
@@ -75,8 +75,8 @@ class SearchUsersUseCaseTest {
     fun `invoke returns users matching search query`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(1, "Alice Anderson", 1000, "New York", null),
-            User(2, "Alex Smith", 800, "London", null)
+            User(id = 1, username = "Alice Anderson", reputation = 1000, profileImage = null, location = "New York", creationDate = null),
+            User(id = 2, username = "Alex Smith", reputation = 800, profileImage = null, location = "London", creationDate = null)
         )
         coEvery { 
             userRepository.searchUsers(query = "Al", page = 1, pageSize = 20) 

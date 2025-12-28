@@ -42,6 +42,7 @@ class UserRepository @Inject constructor(
             id = userId,
             username = displayName,
             reputation = reputation,
+            profileImage = profileImage,
             location = location,
             creationDate = creationDate?.let { formatDate(it) }
         )

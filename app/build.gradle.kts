@@ -57,9 +57,11 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     
-    // Retrofit + OkHttp
+    // Retrofit
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)
+
+    // OkHttp
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
     
@@ -67,11 +69,14 @@ dependencies {
     implementation(libs.moshi)
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.kotlin.codegen)
-    
+
     // Hilt
     implementation(libs.hilt.android)
-    ksp(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    ksp(libs.hilt.compiler)
+    
+    // Image Loading
+    implementation(libs.coil.compose)
     
     // Testing
     testImplementation(libs.junit)

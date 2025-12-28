@@ -72,25 +72,26 @@ app/
 
 ```
 # UI
-Jetpack Compose (Material 3)
+Jetpack Compose
 Compose Navigation
+Coil
 
 # Networking
-Retrofit 2.9.0
-OkHttp 4.12.0
-Moshi 1.15.0
+Retrofit
+OkHttp
+Moshi
 
 # Dependency Injection
-Hilt 2.51
-Hilt Navigation Compose 1.2.0
+Hilt
+Hilt Navigation Compose
 
 # Code Generation
-KSP (Kotlin Symbol Processing)
+KSP
 
 # Testing
-JUnit 4
-MockK 1.13.10
-Kotlinx Coroutines Test 1.8.1
+JUnit
+MockK
+Kotlinx Coroutines Test
 ```
 
 ## Requirements and Constraints

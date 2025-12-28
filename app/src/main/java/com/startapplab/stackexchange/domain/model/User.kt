@@ -4,6 +4,7 @@ data class User(
     val id: Int,
     val username: String,
     val reputation: Int,
+    val profileImage: String?,
     val location: String?,
     val creationDate: String?
 )

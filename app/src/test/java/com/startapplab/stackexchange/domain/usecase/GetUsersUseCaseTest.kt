@@ -26,8 +26,8 @@ class GetUsersUseCaseTest {
     fun `invoke calls repository with correct parameters`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(1, "Alice", 1000, "New York", "Jan 01, 2021"),
-            User(2, "Bob", 500, "London", "Feb 01, 2021")
+            User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = "New York", creationDate = "Jan 01, 2021"),
+            User(id = 2, username = "Bob", reputation = 500, profileImage = null, location = "London", creationDate = "Feb 01, 2021")
         )
         coEvery { userRepository.getUsers(page = 1, pageSize = 20) } returns Result.success(mockUsers)
         
@@ -69,7 +69,7 @@ class GetUsersUseCaseTest {
     fun `invoke returns up to 20 users alphabetically`() = runTest {
         // Given
         val mockUsers = (1..20).map { index ->
-            User(index, "User${('A'.code + index - 1).toChar()}", index * 100, null, null)
+            User(id = index, username = "User${('A'.code + index - 1).toChar()}", reputation = index * 100, profileImage = null, location = null, creationDate = null)
         }
         coEvery { userRepository.getUsers(page = 1, pageSize = 20) } returns Result.success(mockUsers)
         

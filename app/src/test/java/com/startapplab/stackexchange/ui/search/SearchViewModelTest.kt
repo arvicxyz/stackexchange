@@ -44,8 +44,8 @@ class SearchViewModelTest {
     fun `initial state loads users from use case`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(1, "Alice", 1000, "New York", "Jan 01, 2021"),
-            User(2, "Bob", 500, "London", "Feb 01, 2021")
+            User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = "New York", creationDate = "Jan 01, 2021"),
+            User(id = 2, username = "Bob", reputation = 500, profileImage = null, location = "London", creationDate = "Feb 01, 2021")
         )
         coEvery { getUsersUseCase(pageSize = 20) } returns Result.success(mockUsers)
         
@@ -66,7 +66,7 @@ class SearchViewModelTest {
     fun `initial state shows loading then users`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(1, "Alice", 1000, null, null)
+            User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = null, creationDate = null)
         )
         coEvery { getUsersUseCase(pageSize = 20) } returns Result.success(mockUsers)
         
@@ -114,10 +114,10 @@ class SearchViewModelTest {
     @Test
     fun `onSearch calls searchUsersUseCase with query`() = runTest {
         // Given
-        val initialUsers = listOf(User(1, "Alice", 1000, null, null))
+        val initialUsers = listOf(User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = null, creationDate = null))
         val searchResults = listOf(
-            User(2, "John Doe", 500, null, null),
-            User(3, "Johnny", 300, null, null)
+            User(id = 2, username = "John Doe", reputation = 500, profileImage = null, location = null, creationDate = null),
+            User(id = 3, username = "Johnny", reputation = 300, profileImage = null, location = null, creationDate = null)
         )
         coEvery { getUsersUseCase(pageSize = 20) } returns Result.success(initialUsers)
         coEvery { searchUsersUseCase(query = "john", pageSize = 20) } returns Result.success(searchResults)
