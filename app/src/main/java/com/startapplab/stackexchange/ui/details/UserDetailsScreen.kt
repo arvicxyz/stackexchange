@@ -47,7 +47,7 @@ fun UserDetailsScreen(
     user: User,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: UserDetailsViewModel = hiltViewModel()
+    viewModel: UserDetailsViewModel = hiltViewModel(key = "user_${user.id}")
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
@@ -55,7 +55,7 @@ fun UserDetailsScreen(
         onNavigateBack()
     }
     
-    LaunchedEffect(user) {
+    LaunchedEffect(Unit) {
         viewModel.setUser(user)
     }
     
