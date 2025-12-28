@@ -1,5 +1,6 @@
 package com.startapplab.stackexchange.data.api
 
+import com.startapplab.stackexchange.BuildConfig
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -11,7 +12,8 @@ interface StackExchangeApi {
         @Query("pagesize") pageSize: Int = 20,
         @Query("order") order: String = "asc",
         @Query("sort") sort: String = "name",
-        @Query("site") site: String = "stackoverflow"
+        @Query("site") site: String = "stackoverflow",
+        @Query("key") key: String = API_KEY
     ): UsersResponse
     
     @GET("users")
@@ -21,10 +23,12 @@ interface StackExchangeApi {
         @Query("pagesize") pageSize: Int = 20,
         @Query("order") order: String = "asc",
         @Query("sort") sort: String = "name",
-        @Query("site") site: String = "stackoverflow"
+        @Query("site") site: String = "stackoverflow",
+        @Query("key") key: String = API_KEY
     ): UsersResponse
     
     companion object {
         const val BASE_URL = "https://api.stackexchange.com/2.3/"
+        val API_KEY: String = BuildConfig.STACKEXCHANGE_API_KEY
     }
 }

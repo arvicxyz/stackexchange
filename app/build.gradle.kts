@@ -6,6 +6,14 @@ plugins {
     alias(libs.plugins.hilt)
 }
 
+import java.util.Properties
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        this.load(localPropertiesFile.inputStream())
+    }
+}
 android {
     namespace = "com.startapplab.stackexchange"
     compileSdk {
@@ -20,6 +28,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        
+        buildConfigField("String", "STACKEXCHANGE_API_KEY", "\"${localProperties.getProperty("STACKEXCHANGE_API_KEY", "")}\"")
     }
 
     buildTypes {
@@ -40,6 +50,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
