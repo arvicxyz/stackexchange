@@ -119,3 +119,5 @@ Kotlinx Coroutines Test
 # Dark Mode Screenshots
 
 <img src="./screenshots/6.png" alt="Search Screen" width="200"/> <img src="./screenshots/7.png" alt="User Details" width="200"/>
+
+I had so much fun improving the UI after the functions were done! Thank you for the opportunity!
