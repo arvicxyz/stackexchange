@@ -31,6 +31,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -130,11 +131,23 @@ fun SearchScreen(
                                         containerColor = MaterialTheme.colorScheme.errorContainer
                                     )
                                 ) {
-                                    Text(
-                                        text = error,
-                                        modifier = Modifier.padding(16.dp),
-                                        color = MaterialTheme.colorScheme.onErrorContainer
-                                    )
+                                    Column(
+                                        modifier = Modifier.padding(16.dp)
+                                    ) {
+                                        Text(
+                                            text = error,
+                                            color = MaterialTheme.colorScheme.onErrorContainer
+                                        )
+                                        Spacer(modifier = Modifier.height(8.dp))
+                                        TextButton(
+                                            onClick = { viewModel.onSearch() }
+                                        ) {
+                                            Text(
+                                                text = "Retry",
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+                                    }
                                 }
                             }
                         }
