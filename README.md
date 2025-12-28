@@ -108,6 +108,14 @@ Kotlinx Coroutines Test
 
 - [StackExchange API](https://api.stackexchange.com/docs)
 
-# Functional Screenshots
+# Initial Screenshots
 
 <img src="./screenshots/1.png" alt="Search Screen" width="200"/> <img src="./screenshots/2.png" alt="User Details" width="200"/> <img src="./screenshots/3.png" alt="User Details" width="200"/>
+
+# Light Mode Screenshots
+
+<img src="./screenshots/4.png" alt="Search Screen" width="200"/> <img src="./screenshots/5.png" alt="User Details" width="200"/>
+
+# Dark Mode Screenshots
+
+<img src="./screenshots/6.png" alt="Search Screen" width="200"/> <img src="./screenshots/7.png" alt="User Details" width="200"/>
