@@ -6,11 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-data class UserDetailsUiState(
-    val user: User? = null,
-    val isLoading: Boolean = false
-)
-
 class UserDetailsViewModel : ViewModel() {
     
     private val _uiState = MutableStateFlow(UserDetailsUiState())

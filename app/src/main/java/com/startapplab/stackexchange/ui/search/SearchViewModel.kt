@@ -7,12 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
-data class SearchUiState(
-    val query: String = "",
-    val users: List<User> = emptyList(),
-    val isLoading: Boolean = false
-)
-
 class SearchViewModel : ViewModel() {
     
     private val _uiState = MutableStateFlow(SearchUiState())
