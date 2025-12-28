@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import com.startapplab.stackexchange.domain.model.User
-import com.startapplab.stackexchange.ui.components.SkeletonLoader
+import com.startapplab.stackexchange.ui.app.SkeletonLoader
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

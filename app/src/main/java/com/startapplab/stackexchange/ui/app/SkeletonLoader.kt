@@ -1,4 +1,4 @@
-package com.startapplab.stackexchange.ui.components
+package com.startapplab.stackexchange.ui.app
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
