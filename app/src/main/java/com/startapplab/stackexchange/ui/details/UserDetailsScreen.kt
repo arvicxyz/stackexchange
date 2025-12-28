@@ -27,7 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.startapplab.stackexchange.domain.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,7 +36,7 @@ fun UserDetailsScreen(
     user: User,
     onNavigateBack: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: UserDetailsViewModel = viewModel()
+    viewModel: UserDetailsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
     
@@ -68,7 +68,7 @@ fun UserDetailsScreen(
                     .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                // Avatar placeholder
+                // Avatar
                 Box(
                     modifier = Modifier
                         .size(120.dp)
@@ -125,4 +125,3 @@ fun UserDetailsScreen(
         }
     }
 }
-

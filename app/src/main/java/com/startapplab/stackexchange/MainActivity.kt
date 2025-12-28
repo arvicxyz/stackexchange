@@ -13,7 +13,9 @@ import com.startapplab.stackexchange.ui.details.UserDetailsScreen
 import com.startapplab.stackexchange.ui.search.SearchScreen
 import com.startapplab.stackexchange.domain.model.User
 import com.startapplab.stackexchange.ui.theme.StackExchangeTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
