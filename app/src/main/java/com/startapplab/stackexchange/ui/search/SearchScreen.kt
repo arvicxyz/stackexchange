@@ -21,33 +21,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.startapplab.stackexchange.ui.theme.StackExchangeTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.startapplab.stackexchange.domain.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
     modifier: Modifier = Modifier,
-    onUserClick: (userId: Int, username: String, reputation: Int, location: String?, creationDate: String?) -> Unit = { _, _, _, _, _ -> }
+    viewModel: SearchViewModel = viewModel(),
+    onUserClick: (User) -> Unit = {}
 ) {
-    var query by remember { mutableStateOf("") }
-
-    val users = remember {
-        listOf(
-            MockUser(1, "Username1", 123, "San Francisco, CA", "Jan 15, 2025"),
-            MockUser(2, "Username2", 390, "New York, NY", "Mar 22, 2025"),
-            MockUser(3, "Username3", 0, "London, UK", "Dec 1, 2025"),
-            MockUser(4, "Username4", 275, "Davao, Philippines", "Jul 8, 2025")
-        )
-    }
+    val uiState by viewModel.uiState.collectAsState()
     
     Scaffold(
         modifier = modifier,
@@ -70,15 +60,15 @@ fun SearchScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
-                    value = query,
-                    onValueChange = { query = it },
+                    value = uiState.query,
+                    onValueChange = { viewModel.onQueryChange(it) },
                     modifier = Modifier.weight(1f),
                     placeholder = { Text("Search users...") },
                     singleLine = true
                 )
                 
                 Button(
-                    onClick = { /* TODO: Search function */ }
+                    onClick = { viewModel.onSearch() }
                 ) {
                     Text("SEARCH")
                 }
@@ -90,11 +80,11 @@ fun SearchScreen(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                items(users, key = { it.id }) { user ->
+                items(uiState.users, key = { it.id }) { user ->
                     UserListItem(
                         reputation = user.reputation,
                         username = user.username,
-                        onClick = { onUserClick(user.id, user.username, user.reputation, user.location, user.creationDate) }
+                        onClick = { onUserClick(user) }
                     )
                     HorizontalDivider()
                 }
@@ -102,7 +92,6 @@ fun SearchScreen(
         }
     }
 }
-
 
 @Composable
 private fun UserListItem(
@@ -133,11 +122,3 @@ private fun UserListItem(
         )
     }
 }
-
-private data class MockUser(
-    val id: Int,
-    val username: String,
-    val reputation: Int,
-    val location: String?,
-    val creationDate: String?
-)

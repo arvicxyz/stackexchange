@@ -19,26 +19,31 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.startapplab.stackexchange.ui.theme.StackExchangeTheme
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.startapplab.stackexchange.domain.model.User
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserDetailsScreen(
-    userId: Int,
-    username: String,
-    reputation: Int,
-    location: String?,
-    creationDate: String?,
-    avatarUrl: String?,
+    user: User,
     onNavigateBack: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: UserDetailsViewModel = viewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
+    
+    LaunchedEffect(user) {
+        viewModel.setUser(user)
+    }
+    
     Scaffold(
         modifier = modifier,
         topBar = {
@@ -55,66 +60,69 @@ fun UserDetailsScreen(
             )
         }
     ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Avatar placeholder
-            Box(
+        uiState.user?.let { currentUser ->
+            Column(
                 modifier = Modifier
-                    .size(120.dp)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                // Avatar placeholder
+                Box(
+                    modifier = Modifier
+                        .size(120.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.primaryContainer),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = currentUser.username.take(1).uppercase(),
+                        style = MaterialTheme.typography.headlineLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                // Username
                 Text(
-                    text = username.take(1).uppercase(),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                    text = currentUser.username,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold
                 )
-            }
-            
-            Spacer(modifier = Modifier.height(16.dp))
-            
-            // Username
-            Text(
-                text = username,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-            
-            Spacer(modifier = Modifier.height(8.dp))
-            
-            // Reputation
-            Text(
-                text = "Reputation: $reputation",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.primary
-            )
-            
-            Spacer(modifier = Modifier.height(24.dp))
-            
-            // Location
-            location?.let {
-                Text(
-                    text = "Location: $it",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                
                 Spacer(modifier = Modifier.height(8.dp))
-            }
-            
-            // Creation Date
-            creationDate?.let {
+                
+                // Reputation
                 Text(
-                    text = "Creation Date: $it",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                    text = "Reputation: ${currentUser.reputation}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
+                
+                Spacer(modifier = Modifier.height(24.dp))
+                
+                // Location
+                currentUser.location?.let {
+                    Text(
+                        text = "Location: $it",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                
+                // Creation Date
+                currentUser.creationDate?.let {
+                    Text(
+                        text = "Creation Date: $it",
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
     }
 }
+
