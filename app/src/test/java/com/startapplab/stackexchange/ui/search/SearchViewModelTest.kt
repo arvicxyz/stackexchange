@@ -44,8 +44,8 @@ class SearchViewModelTest {
     fun `initial state loads users from use case`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = "New York", creationDate = "Jan 01, 2021"),
-            User(id = 2, username = "Bob", reputation = 500, profileImage = null, location = "London", creationDate = "Feb 01, 2021")
+            createTestUser(id = 1, username = "Alice", reputation = 1000, location = "New York", creationDate = "Jan 01, 2021"),
+            createTestUser(id = 2, username = "Bob", reputation = 500, location = "London", creationDate = "Feb 01, 2021")
         )
         coEvery { getUsersUseCase(pageSize = 20) } returns Result.success(mockUsers)
         
@@ -66,7 +66,7 @@ class SearchViewModelTest {
     fun `initial state shows loading then users`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = null, creationDate = null)
+            createTestUser(id = 1, username = "Alice", reputation = 1000)
         )
         coEvery { getUsersUseCase(pageSize = 20) } returns Result.success(mockUsers)
         
@@ -114,10 +114,10 @@ class SearchViewModelTest {
     @Test
     fun `onSearch calls searchUsersUseCase with query`() = runTest {
         // Given
-        val initialUsers = listOf(User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = null, creationDate = null))
+        val initialUsers = listOf(createTestUser(id = 1, username = "Alice", reputation = 1000))
         val searchResults = listOf(
-            User(id = 2, username = "John Doe", reputation = 500, profileImage = null, location = null, creationDate = null),
-            User(id = 3, username = "Johnny", reputation = 300, profileImage = null, location = null, creationDate = null)
+            createTestUser(id = 2, username = "John Doe", reputation = 500),
+            createTestUser(id = 3, username = "Johnny", reputation = 300)
         )
         coEvery { getUsersUseCase(pageSize = 20) } returns Result.success(initialUsers)
         coEvery { searchUsersUseCase(query = "john", pageSize = 20) } returns Result.success(searchResults)
@@ -157,4 +157,27 @@ class SearchViewModelTest {
         assertFalse(state.isLoading)
         assertEquals("Search failed", state.errorMessage)
     }
+    
+    private fun createTestUser(
+        id: Int,
+        username: String,
+        reputation: Int,
+        profileImage: String? = null,
+        location: String? = null,
+        creationDate: String? = null
+    ) = User(
+        id = id,
+        username = username,
+        reputation = reputation,
+        profileImage = profileImage,
+        location = location,
+        creationDate = creationDate,
+        lastAccessDate = null,
+        websiteUrl = null,
+        badgeCounts = null,
+        reputationChangeYear = null,
+        reputationChangeMonth = null,
+        reputationChangeWeek = null,
+        reputationChangeDay = null
+    )
 }

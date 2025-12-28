@@ -26,8 +26,8 @@ class SearchUsersUseCaseTest {
     fun `invoke calls repository with query`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(id = 1, username = "John Doe", reputation = 1000, profileImage = null, location = null, creationDate = null),
-            User(id = 2, username = "Johnny", reputation = 500, profileImage = null, location = null, creationDate = null)
+            createTestUser(id = 1, username = "John Doe", reputation = 1000),
+            createTestUser(id = 2, username = "Johnny", reputation = 500)
         )
         coEvery { 
             userRepository.searchUsers(query = "John", page = 1, pageSize = 20) 
@@ -75,8 +75,8 @@ class SearchUsersUseCaseTest {
     fun `invoke returns users matching search query`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(id = 1, username = "Alice Anderson", reputation = 1000, profileImage = null, location = "New York", creationDate = null),
-            User(id = 2, username = "Alex Smith", reputation = 800, profileImage = null, location = "London", creationDate = null)
+            createTestUser(id = 1, username = "Alice Anderson", reputation = 1000, location = "New York"),
+            createTestUser(id = 2, username = "Alex Smith", reputation = 800, location = "London")
         )
         coEvery { 
             userRepository.searchUsers(query = "Al", page = 1, pageSize = 20) 
@@ -91,4 +91,27 @@ class SearchUsersUseCaseTest {
         assertEquals(2, users.size)
         assertTrue(users.all { it.username.startsWith("Al") })
     }
+    
+    private fun createTestUser(
+        id: Int,
+        username: String,
+        reputation: Int,
+        profileImage: String? = null,
+        location: String? = null,
+        creationDate: String? = null
+    ) = User(
+        id = id,
+        username = username,
+        reputation = reputation,
+        profileImage = profileImage,
+        location = location,
+        creationDate = creationDate,
+        lastAccessDate = null,
+        websiteUrl = null,
+        badgeCounts = null,
+        reputationChangeYear = null,
+        reputationChangeMonth = null,
+        reputationChangeWeek = null,
+        reputationChangeDay = null
+    )
 }

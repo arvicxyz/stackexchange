@@ -1,5 +1,6 @@
 package com.startapplab.stackexchange.data.repository
 
+import com.startapplab.stackexchange.data.api.BadgeCountsDto
 import com.startapplab.stackexchange.data.api.StackExchangeApi
 import com.startapplab.stackexchange.data.api.UserDto
 import com.startapplab.stackexchange.data.api.UsersResponse
@@ -26,28 +27,8 @@ class UserRepositoryTest {
     fun `getUsers returns list of users sorted alphabetically`() = runTest {
         // Given
         val mockUserDtos = listOf(
-            UserDto(
-                userId = 1,
-                displayName = "Alice",
-                reputation = 1000,
-                profileImage = null,
-                location = "New York",
-                creationDate = 1609459200L,
-                lastAccessDate = null,
-                websiteUrl = null,
-                link = null
-            ),
-            UserDto(
-                userId = 2,
-                displayName = "Bob",
-                reputation = 500,
-                profileImage = null,
-                location = "London",
-                creationDate = 1612137600L,
-                lastAccessDate = null,
-                websiteUrl = null,
-                link = null
-            )
+            createTestUserDto(userId = 1, displayName = "Alice", reputation = 1000, location = "New York", creationDate = 1609459200L),
+            createTestUserDto(userId = 2, displayName = "Bob", reputation = 500, location = "London", creationDate = 1612137600L)
         )
         val mockResponse = UsersResponse(
             items = mockUserDtos,
@@ -83,17 +64,7 @@ class UserRepositoryTest {
     fun `getUsers returns up to 20 users`() = runTest {
         // Given
         val mockUserDtos = (1..20).map { index ->
-            UserDto(
-                userId = index,
-                displayName = "User$index",
-                reputation = index * 100,
-                profileImage = null,
-                location = null,
-                creationDate = null,
-                lastAccessDate = null,
-                websiteUrl = null,
-                link = null
-            )
+            createTestUserDto(userId = index, displayName = "User$index", reputation = index * 100)
         }
         val mockResponse = UsersResponse(
             items = mockUserDtos,
@@ -140,28 +111,8 @@ class UserRepositoryTest {
     fun `searchUsers returns filtered users by name`() = runTest {
         // Given
         val mockUserDtos = listOf(
-            UserDto(
-                userId = 1,
-                displayName = "John Doe",
-                reputation = 1500,
-                profileImage = null,
-                location = "San Francisco",
-                creationDate = 1609459200L,
-                lastAccessDate = null,
-                websiteUrl = null,
-                link = null
-            ),
-            UserDto(
-                userId = 2,
-                displayName = "Johnny Appleseed",
-                reputation = 2000,
-                profileImage = null,
-                location = "Seattle",
-                creationDate = 1612137600L,
-                lastAccessDate = null,
-                websiteUrl = null,
-                link = null
-            )
+            createTestUserDto(userId = 1, displayName = "John Doe", reputation = 1500, location = "San Francisco", creationDate = 1609459200L),
+            createTestUserDto(userId = 2, displayName = "Johnny Appleseed", reputation = 2000, location = "Seattle", creationDate = 1612137600L)
         )
         val mockResponse = UsersResponse(
             items = mockUserDtos,
@@ -195,17 +146,7 @@ class UserRepositoryTest {
     fun `searchUsers with blank query calls getUsers instead`() = runTest {
         // Given
         val mockUserDtos = listOf(
-            UserDto(
-                userId = 1,
-                displayName = "Alice",
-                reputation = 1000,
-                profileImage = null,
-                location = null,
-                creationDate = null,
-                lastAccessDate = null,
-                websiteUrl = null,
-                link = null
-            )
+            createTestUserDto(userId = 1, displayName = "Alice", reputation = 1000)
         )
         val mockResponse = UsersResponse(
             items = mockUserDtos,
@@ -248,4 +189,28 @@ class UserRepositoryTest {
         assertTrue(result.isFailure)
         assertEquals("Search failed", result.exceptionOrNull()?.message)
     }
+    
+    private fun createTestUserDto(
+        userId: Int,
+        displayName: String,
+        reputation: Int,
+        profileImage: String? = null,
+        location: String? = null,
+        creationDate: Long? = null
+    ) = UserDto(
+        userId = userId,
+        displayName = displayName,
+        reputation = reputation,
+        profileImage = profileImage,
+        location = location,
+        creationDate = creationDate,
+        lastAccessDate = null,
+        websiteUrl = null,
+        badgeCounts = null,
+        reputationChangeYear = null,
+        reputationChangeQuarter = null,
+        reputationChangeMonth = null,
+        reputationChangeWeek = null,
+        reputationChangeDay = null
+    )
 }

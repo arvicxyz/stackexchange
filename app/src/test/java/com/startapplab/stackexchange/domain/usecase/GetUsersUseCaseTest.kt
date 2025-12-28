@@ -26,8 +26,8 @@ class GetUsersUseCaseTest {
     fun `invoke calls repository with correct parameters`() = runTest {
         // Given
         val mockUsers = listOf(
-            User(id = 1, username = "Alice", reputation = 1000, profileImage = null, location = "New York", creationDate = "Jan 01, 2021"),
-            User(id = 2, username = "Bob", reputation = 500, profileImage = null, location = "London", creationDate = "Feb 01, 2021")
+            createTestUser(id = 1, username = "Alice", reputation = 1000, location = "New York", creationDate = "Jan 01, 2021"),
+            createTestUser(id = 2, username = "Bob", reputation = 500, location = "London", creationDate = "Feb 01, 2021")
         )
         coEvery { userRepository.getUsers(page = 1, pageSize = 20) } returns Result.success(mockUsers)
         
@@ -69,7 +69,7 @@ class GetUsersUseCaseTest {
     fun `invoke returns up to 20 users alphabetically`() = runTest {
         // Given
         val mockUsers = (1..20).map { index ->
-            User(id = index, username = "User${('A'.code + index - 1).toChar()}", reputation = index * 100, profileImage = null, location = null, creationDate = null)
+            createTestUser(id = index, username = "User${('A'.code + index - 1).toChar()}", reputation = index * 100)
         }
         coEvery { userRepository.getUsers(page = 1, pageSize = 20) } returns Result.success(mockUsers)
         
@@ -83,4 +83,27 @@ class GetUsersUseCaseTest {
         assertEquals("UserA", users[0].username)
         assertEquals("UserT", users[19].username)
     }
+    
+    private fun createTestUser(
+        id: Int,
+        username: String,
+        reputation: Int,
+        profileImage: String? = null,
+        location: String? = null,
+        creationDate: String? = null
+    ) = User(
+        id = id,
+        username = username,
+        reputation = reputation,
+        profileImage = profileImage,
+        location = location,
+        creationDate = creationDate,
+        lastAccessDate = null,
+        websiteUrl = null,
+        badgeCounts = null,
+        reputationChangeYear = null,
+        reputationChangeMonth = null,
+        reputationChangeWeek = null,
+        reputationChangeDay = null
+    )
 }
