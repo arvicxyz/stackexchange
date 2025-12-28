@@ -27,7 +27,7 @@ class SearchViewModel @Inject constructor(
     
     private fun loadInitialUsers() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             
             getUsersUseCase(pageSize = 20)
                 .onSuccess { users ->
@@ -51,7 +51,7 @@ class SearchViewModel @Inject constructor(
         val query = _uiState.value.query
         
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
+            _uiState.update { it.copy(isLoading = true, errorMessage = null) }
             
             searchUsersUseCase(query = query, pageSize = 20)
                 .onSuccess { users ->

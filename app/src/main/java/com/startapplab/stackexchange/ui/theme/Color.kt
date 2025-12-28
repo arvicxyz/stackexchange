@@ -2,13 +2,25 @@ package com.startapplab.stackexchange.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+// Brand Colors
+val StackOrange = Color(0xFFF48024)
+val StackOrangeDark = Color(0xFFDA680B)
+val StackBlue = Color(0xFF0077CC)
+val StackGreen = Color(0xFF5EBA7D)
 
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+// Light Theme Colors
+val LightBackground = Color(0xFFF1F2F3)
+val LightSurface = Color.White
+val LightSurfaceVariant = Color(0xFFE4E6E8)
+val LightOnBackground = Color(0xFF232629)
+val LightOnSurface = Color(0xFF3C4146)
+
+// Dark Theme Colors
+val DarkBackground = Color(0xFF1C1D1E)
+val DarkSurface = Color(0xFF2D2D2D)
+val DarkSurfaceVariant = Color(0xFF3D3D3D)
+val DarkOnBackground = Color(0xFFE7E8EB)
+val DarkOnSurface = Color(0xFFBBBFC3)
 
 // Gold Tier (100k+)
 val ReputationGoldBackground = Color(0xFFFFF3E0)
@@ -25,3 +37,7 @@ val ReputationBlueText = Color(0xFF1565C0)
 // Gray Tier (<1k)
 val ReputationGrayBackground = Color(0xFFF5F5F5)
 val ReputationGrayText = Color(0xFF616161)
+
+// Card Background
+val CardBackgroundLight = Color(0xFFF1F1F1)
+val CardBackgroundDark = Color(0xFF2A2A2A)

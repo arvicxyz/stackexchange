@@ -2,9 +2,12 @@ package com.startapplab.stackexchange
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -21,6 +24,23 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val isDarkTheme = isSystemInDarkTheme()
+            
+            DisposableEffect(isDarkTheme) {
+                enableEdgeToEdge(
+                    statusBarStyle = SystemBarStyle.auto(
+                        android.graphics.Color.TRANSPARENT,
+                        android.graphics.Color.TRANSPARENT
+                    ),
+                    navigationBarStyle = if (isDarkTheme) {
+                        SystemBarStyle.dark(0xFF1C1D1E.toInt())
+                    } else {
+                        SystemBarStyle.light(0xFFF1F2F3.toInt(), 0xFF1C1D1E.toInt())
+                    }
+                )
+                onDispose {}
+            }
+            
             StackExchangeTheme {
                 StackExchangeApp()
             }
