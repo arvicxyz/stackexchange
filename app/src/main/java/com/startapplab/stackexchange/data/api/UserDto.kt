@@ -21,5 +21,17 @@ data class UserDto(
     @Json(name = "creation_date") val creationDate: Long?,
     @Json(name = "last_access_date") val lastAccessDate: Long?,
     @Json(name = "website_url") val websiteUrl: String?,
-    @Json(name = "link") val link: String?
+    @Json(name = "badge_counts") val badgeCounts: BadgeCountsDto?,
+    @Json(name = "reputation_change_year") val reputationChangeYear: Int?,
+    @Json(name = "reputation_change_quarter") val reputationChangeQuarter: Int?,
+    @Json(name = "reputation_change_month") val reputationChangeMonth: Int?,
+    @Json(name = "reputation_change_week") val reputationChangeWeek: Int?,
+    @Json(name = "reputation_change_day") val reputationChangeDay: Int?
+)
+
+@JsonClass(generateAdapter = true)
+data class BadgeCountsDto(
+    @Json(name = "gold") val gold: Int,
+    @Json(name = "silver") val silver: Int,
+    @Json(name = "bronze") val bronze: Int
 )

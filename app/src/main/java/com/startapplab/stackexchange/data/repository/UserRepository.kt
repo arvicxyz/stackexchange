@@ -1,7 +1,9 @@
 package com.startapplab.stackexchange.data.repository
 
+import com.startapplab.stackexchange.data.api.BadgeCountsDto
 import com.startapplab.stackexchange.data.api.StackExchangeApi
 import com.startapplab.stackexchange.data.api.UserDto
+import com.startapplab.stackexchange.domain.model.BadgeCounts
 import com.startapplab.stackexchange.domain.model.User
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -44,7 +46,22 @@ class UserRepository @Inject constructor(
             reputation = reputation,
             profileImage = profileImage,
             location = location,
-            creationDate = creationDate?.let { formatDate(it) }
+            creationDate = creationDate?.let { formatDate(it) },
+            lastAccessDate = lastAccessDate?.let { formatDate(it) },
+            websiteUrl = websiteUrl,
+            badgeCounts = badgeCounts?.toDomainModel(),
+            reputationChangeYear = reputationChangeYear,
+            reputationChangeMonth = reputationChangeMonth,
+            reputationChangeWeek = reputationChangeWeek,
+            reputationChangeDay = reputationChangeDay
+        )
+    }
+    
+    private fun BadgeCountsDto.toDomainModel(): BadgeCounts {
+        return BadgeCounts(
+            gold = gold,
+            silver = silver,
+            bronze = bronze
         )
     }
     
