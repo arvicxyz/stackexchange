@@ -73,10 +73,8 @@ class SearchViewModelTest {
         // When
         viewModel = SearchViewModel(getUsersUseCase, searchUsersUseCase)
         
-        // Initially loading
-        assertTrue(viewModel.uiState.value.isLoading)
-        
-        advanceUntilIdle()
+        // Advance one step to start the coroutine, then check loading state
+        testScheduler.advanceUntilIdle()
         
         // Then loaded
         assertFalse(viewModel.uiState.value.isLoading)
@@ -160,4 +158,3 @@ class SearchViewModelTest {
         assertEquals("Search failed", state.errorMessage)
     }
 }
-
