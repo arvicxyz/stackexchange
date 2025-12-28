@@ -18,6 +18,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
@@ -35,8 +37,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,10 +49,9 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.startapplab.stackexchange.domain.model.User
 import com.startapplab.stackexchange.ui.search.components.UserListItem
 
@@ -60,8 +62,14 @@ fun SearchScreen(
     viewModel: SearchViewModel = hiltViewModel(),
     onUserClick: (User) -> Unit = {}
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    
+    val isLoading by remember { derivedStateOf { uiState.isLoading } }
+    val users by remember { derivedStateOf { uiState.users } }
+    val errorMessage by remember { derivedStateOf { uiState.errorMessage } }
+    val query by remember { derivedStateOf { uiState.query } }
+    val hasNoUsersAndNoError by remember { derivedStateOf { users.isEmpty() && errorMessage == null } }
     
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
@@ -69,7 +77,6 @@ fun SearchScreen(
             Column(
                 modifier = Modifier.background(MaterialTheme.colorScheme.background)
             ) {
-                // Title
                 TopAppBar(
                     title = { Text("Users", fontWeight = FontWeight.Bold) },
                     scrollBehavior = scrollBehavior,
@@ -79,12 +86,11 @@ fun SearchScreen(
                     )
                 )
                 
-                // Search Bar
                 SearchBar(
-                    query = uiState.query,
-                    onQueryChange = { viewModel.onQueryChange(it) },
-                    onSearch = { viewModel.onSearch() },
-                    enabled = !uiState.isLoading,
+                    query = query,
+                    onQueryChange = viewModel::onQueryChange,
+                    onSearch = viewModel::onSearch,
+                    enabled = !isLoading,
                     modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
                 )
             }
@@ -96,72 +102,109 @@ fun SearchScreen(
                 .padding(innerPadding)
         ) {
             when {
-                uiState.isLoading -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        CircularProgressIndicator()
-                    }
+                isLoading -> {
+                    LoadingContent()
                 }
-                uiState.users.isEmpty() && uiState.errorMessage == null -> {
-                    Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = "No users found",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
+                hasNoUsersAndNoError -> {
+                    EmptyContent()
                 }
                 else -> {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
-                    ) {
-                        // Error Message
-                        uiState.errorMessage?.let { error ->
-                            item {
-                                Card(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = MaterialTheme.colorScheme.errorContainer
-                                    )
-                                ) {
-                                    Column(
-                                        modifier = Modifier.padding(16.dp)
-                                    ) {
-                                        Text(
-                                            text = error,
-                                            color = MaterialTheme.colorScheme.onErrorContainer
-                                        )
-                                        Spacer(modifier = Modifier.height(8.dp))
-                                        TextButton(
-                                            onClick = { viewModel.onSearch() }
-                                        ) {
-                                            Text(
-                                                text = "Retry",
-                                                fontWeight = FontWeight.Bold
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        
-                        items(uiState.users, key = { it.id }) { user ->
-                            UserListItem(
-                                reputation = user.reputation,
-                                username = user.username,
-                                profileImage = user.profileImage,
-                                onClick = { onUserClick(user) }
-                            )
-                        }
-                    }
+                    UserListContent(
+                        users = users,
+                        errorMessage = errorMessage,
+                        onRetry = viewModel::onSearch,
+                        onUserClick = onUserClick
+                    )
                 }
+            }
+        }
+    }
+}
+
+@Composable
+private fun LoadingContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
+    }
+}
+
+@Composable
+private fun EmptyContent() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "No users found",
+            style = MaterialTheme.typography.bodyLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+}
+
+@Composable
+private fun UserListContent(
+    users: List<User>,
+    errorMessage: String?,
+    onRetry: () -> Unit,
+    onUserClick: (User) -> Unit
+) {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        // Error Message
+        errorMessage?.let { error ->
+            item(key = "error") {
+                ErrorCard(
+                    error = error,
+                    onRetry = onRetry
+                )
+            }
+        }
+        
+        items(
+            items = users,
+            key = { it.id }
+        ) { user ->
+            UserListItem(
+                reputation = user.reputation,
+                username = user.username,
+                profileImage = user.profileImage,
+                onClick = { onUserClick(user) }
+            )
+        }
+    }
+}
+
+@Composable
+private fun ErrorCard(
+    error: String,
+    onRetry: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.errorContainer
+        )
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.onErrorContainer
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            TextButton(onClick = onRetry) {
+                Text(
+                    text = "Retry",
+                    fontWeight = FontWeight.Bold
+                )
             }
         }
     }
@@ -175,12 +218,26 @@ private fun SearchBar(
     enabled: Boolean = true,
     modifier: Modifier = Modifier
 ) {
+    val showClearButton by remember(query) { derivedStateOf { query.isNotEmpty() } }
+
+    val surfaceColor = MaterialTheme.colorScheme.surface
+    val onSurfaceColor = MaterialTheme.colorScheme.onSurface
+    val onSurfaceVariantColor = MaterialTheme.colorScheme.onSurfaceVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
+    
+    val textStyle = remember(onSurfaceColor) {
+        TextStyle(
+            color = onSurfaceColor,
+            fontSize = androidx.compose.ui.unit.TextUnit.Unspecified
+        )
+    }
+    
     Row(
         modifier = modifier
             .fillMaxWidth()
             .height(56.dp)
             .clip(RoundedCornerShape(28.dp))
-            .background(MaterialTheme.colorScheme.surface),
+            .background(surfaceColor),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Text Input
@@ -193,10 +250,10 @@ private fun SearchBar(
             enabled = enabled,
             singleLine = true,
             textStyle = TextStyle(
-                color = MaterialTheme.colorScheme.onSurface,
+                color = onSurfaceColor,
                 fontSize = MaterialTheme.typography.bodyLarge.fontSize
             ),
-            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+            cursorBrush = SolidColor(primaryColor),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search
             ),
@@ -209,7 +266,7 @@ private fun SearchBar(
                         Text(
                             text = "Search users...",
                             style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = onSurfaceVariantColor
                         )
                     }
                     innerTextField()
@@ -218,7 +275,7 @@ private fun SearchBar(
         )
 
         // Clear Button
-        if (query.isNotEmpty()) {
+        if (showClearButton) {
             IconButton(
                 onClick = {
                     onQueryChange("")
@@ -230,7 +287,7 @@ private fun SearchBar(
                 Icon(
                     imageVector = Icons.Default.Clear,
                     contentDescription = "Clear search",
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    tint = onSurfaceVariantColor
                 )
             }
             
@@ -246,9 +303,9 @@ private fun SearchBar(
                 .size(48.dp)
                 .clip(CircleShape),
             colors = IconButtonDefaults.iconButtonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = primaryColor,
                 contentColor = Color.White,
-                disabledContainerColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.5f),
+                disabledContainerColor = primaryColor.copy(alpha = 0.5f),
                 disabledContentColor = Color.White.copy(alpha = 0.5f)
             )
         ) {
